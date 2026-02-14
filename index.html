@@ -14,40 +14,72 @@
         .primary{background:#ff4d6d;color:white}
         .no-btn{background:#adb5bd;color:white;position:absolute; z-index: 100;}
         textarea{ padding:15px; border-radius:20px; border:2px solid #ffb3c6; width:90%; max-width:400px; font-size:1rem; outline: none; background: rgba(255,255,255,0.8); }
-        .reward-img{ width:100%; max-width:350px; border-radius:20px; margin:20px 0; box-shadow: 0 8px 20px rgba(0,0,0,0.15); border: 5px solid white; display: block;}
+        .reward-img{ width:100%; max-width:350px; border-radius:20px; margin:20px 0; box-shadow: 0 8px 20px rgba(0,0,0,0.15); border: 5px solid white; }
+        .heart{ position:fixed;bottom:-20px;font-size:20px; animation:floatUp linear infinite;opacity:.7; pointer-events: none; }
+        @keyframes floatUp{ to{transform:translateY(-120vh);opacity:0} }
         #pop-icon { font-size: 8rem; animation: popAnim 0.8s infinite alternate; }
         @keyframes popAnim { from { transform: scale(1); } to { transform: scale(1.3); } }
-        #loading-text { font-style: italic; color: #ff4d6d; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-<div id="q5" class="section">
-    <h1>Would you like to give me 10 rupees for stealing your heart? 😌</h1>
-    <button class="primary" onclick="goWithDelay('game')">Yes 💖</button>
-    <button class="primary" onclick="handleNo()">No 😭</button>
-    <p id="noMsg" style="color: #d63384; font-weight: bold;"></p>
-    <div id="wait-msg" class="hidden"><p id="loading-text">Wait for 5 seconds... something is happening...</p></div>
+<div id="lock" class="section">
+    <h1>🔐 Private Love Portal</h1>
+    <p>Enter the secret code to access 💌</p>
+    <input id="codeInput" type="password" placeholder="Enter the code" style="padding:15px; border-radius:20px; border:2px solid #ffb3c6;">
+    <br><br>
+    <button class="primary" onclick="unlock()">Unlock ❤️</button>
 </div>
 
-<div id="game" class="section hidden">
-    <h1>🍬 Love Crush Game 🍬</h1>
-    <p>Loading the next part in 5 seconds...</p>
+<div id="q1" class="section hidden">
+    <h1>Sonammmmmmmmmm,<br>apart from being my Valentine…<br>would you like to be forever with me? 💍</h1>
+    <div style="position:relative; height:150px; width: 100%;">
+        <button class="primary" onclick="go('q2')">Yes ❤️</button>
+        <button id="no1" class="no-btn">No 🙃</button>
+    </div>
+</div>
+
+<div id="q2" class="section hidden">
+    <h1>Promise me you'll answer everything truthfully from here? 💗</h1>
+    <div style="position:relative; height:150px; width: 100%;">
+        <button class="primary" onclick="go('q3')">I promise 💞</button>
+        <button id="no2" class="no-btn">No 🙈</button>
+    </div>
+</div>
+
+<div id="q3" class="section hidden">
+    <h1>When did you first realize you were falling in love with me? 💖</h1>
+    <textarea id="loveInput" rows="4" placeholder="Tell me everything..."></textarea>
+    <br><br>
+    <button id="q3Next" class="primary" onclick="go('q4')">Continue 💌</button>
+</div>
+
+<div id="q4" class="section hidden">
+    <h1>What is my favorite thing to watch without blinking? 👀</h1>
+    <button class="primary" onclick="alert('WRONG! ❌'); go('q2')">Football Match 🏈</button>
+    <button class="primary" onclick="alert('WRONG! ❌'); go('q2')">Cricket Match 🏏</button>
+    <button class="primary" onclick="go('q5')">You ❤️ 🥹✨</button>
+</div>
+
+<div id="q5" class="section hidden">
+    <h1>Would you like to give me 10 rupees for stealing your heart? 😌</h1>
+    <button class="primary" onclick="startPopTimer()">Yes 💖</button>
+    <button class="primary" onclick="handleGareebNo()">No 😭</button>
+    <p id="noMsg" style="color: #d63384; font-weight: bold;"></p>
 </div>
 
 <div id="timer-section" class="section hidden">
     <div id="pop-icon">🎉</div>
     <h1 id="timer-text">7</h1>
-    <p>Final surprise incoming...</p>
+    <p>Final surprise incoming in a few seconds...</p>
 </div>
 
 <div id="result" class="section hidden">
     <h1>Happy Valentine’s Day 💝</h1>
     <h2 style="margin:25px 0">"You are my favorite feeling, my safest place, and my forever choice."</h2>
-
-    <video class="reward-img" autoplay muted loop playsinline controls>
+    
+    <video width="320" height="auto" autoplay muted loop playsinline class="reward-img">
         <source src="https://googleusercontent.com/generated_video_content/15798410986430532131" type="video/mp4">
-        Your browser does not support the video tag.
     </video>
 
     <p>Check your door! A surprise is waiting... 🎁</p>
@@ -55,40 +87,61 @@
 </div>
 
 <script>
+const CODE = "270708";
 let noClicks = 0;
 
-function handleNo() {
+function unlock() {
+    if(document.getElementById('codeInput').value === CODE) go('q1');
+    else alert("Wrong code! ❤️");
+}
+
+function go(id) {
+    document.querySelectorAll(".section").forEach(s=>s.classList.add("hidden"));
+    document.getElementById(id).classList.remove("hidden");
+}
+
+function handleGareebNo() {
     noClicks++;
     const msg = document.getElementById('noMsg');
     if(noClicks === 1) {
         msg.innerText = "This question requires a double click! Click No again!";
     } else {
-        msg.innerHTML = "Certified Gareeb 💸! Moving to reward anyway...";
-        goWithDelay('timer-section', 5000); // 5 second wait
+        msg.innerHTML = "Certified Gareeb 💸!<br>Wait 7 seconds for your reward...";
+        setTimeout(startPopTimer, 2000);
     }
 }
 
-function goWithDelay(nextId, time = 5000) {
-    document.getElementById('wait-msg').classList.remove('hidden');
-    setTimeout(() => {
-        document.querySelectorAll(".section").forEach(s=>s.classList.add("hidden"));
-        document.getElementById(nextId).classList.remove("hidden");
-        if(nextId === 'timer-section') startFinalCountdown();
-    }, time);
-}
-
-function startFinalCountdown() {
-    let count = 7; // 7 second timer approach
-    const timerDisplay = document.getElementById('timer-text');
+function startPopTimer() {
+    go('timer-section');
+    let count = 7;
     const interval = setInterval(() => {
         count--;
-        timerDisplay.innerText = count;
+        document.getElementById('timer-text').innerText = count;
         if(count <= 0) {
             clearInterval(interval);
-            document.querySelectorAll(".section").forEach(s=>s.classList.add("hidden"));
-            document.getElementById('result').classList.remove('hidden');
+            go('result');
         }
     }, 1000);
+}
+
+// Running No Button Logic
+function chaos(b){
+    b.style.left = Math.random() * 70 + "%";
+    b.style.top = Math.random() * 100 + "px";
+}
+["no1","no2"].forEach(id=>{
+    const b=document.getElementById(id);
+    b.addEventListener("mouseover",()=>chaos(b));
+    b.addEventListener("touchstart",()=>chaos(b));
+});
+
+// Floating Hearts
+for(let i=0;i<15;i++){
+    const h=document.createElement("div");
+    h.className="heart"; h.innerText="❤️";
+    h.style.left=Math.random()*100+"vw";
+    h.style.animationDuration=4+Math.random()*5+"s";
+    document.body.appendChild(h);
 }
 </script>
 </body>
