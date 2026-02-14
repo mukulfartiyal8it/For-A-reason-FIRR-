@@ -14,7 +14,7 @@
         .primary{background:#ff4d6d;color:white}
         .no-btn{background:#adb5bd;color:white;position:absolute; z-index: 100;}
         textarea{ padding:15px; border-radius:20px; border:2px solid #ffb3c6; width:90%; max-width:400px; font-size:1rem; outline: none; background: rgba(255,255,255,0.8); }
-        .reward-img{ width:100%; max-width:350px; border-radius:20px; margin:20px 0; box-shadow: 0 8px 20px rgba(0,0,0,0.15); border: 5px solid white; }
+        .reward-img{ width:100%; max-width:350px; border-radius:20px; margin:20px 0; box-shadow: 0 8px 20px rgba(0,0,0,0.15); border: 5px solid white; cursor: pointer; }
         .heart{ position:fixed;bottom:-20px;font-size:20px; animation:floatUp linear infinite;opacity:.7; pointer-events: none; }
         @keyframes floatUp{ to{transform:translateY(-120vh);opacity:0} }
         #pop-icon { font-size: 8rem; animation: popAnim 0.8s infinite alternate; }
@@ -78,9 +78,10 @@
     <h1>Happy Valentine’s Day 💝</h1>
     <h2 style="margin:25px 0">"You are my favorite feeling, my safest place, and my forever choice."</h2>
     
-    <video width="320" height="auto" autoplay muted loop playsinline class="reward-img">
+    <video id="valVideo" width="320" height="auto" loop playsinline muted class="reward-img" onclick="this.play()">
         <source src="https://googleusercontent.com/generated_video_content/15798410986430532131" type="video/mp4">
     </video>
+    <p style="font-size: 0.8rem; font-style: italic; color: #d63384;">(Tap the toffee to play! ❤️)</p>
 
     <p>Check your door! A surprise is waiting... 🎁</p>
     <h2 style="font-size: 2rem;">I LOVEEEEEE YOUUUUUUUUU ❤️</h2>
@@ -120,22 +121,24 @@ function startPopTimer() {
         if(count <= 0) {
             clearInterval(interval);
             go('result');
+            // Force the video to attempt to play
+            const v = document.getElementById('valVideo');
+            v.play().catch(e => console.log("Autoplay blocked, waiting for tap."));
         }
     }, 1000);
 }
 
-// Running No Button Logic
 function chaos(b){
     b.style.left = Math.random() * 70 + "%";
     b.style.top = Math.random() * 100 + "px";
 }
+
 ["no1","no2"].forEach(id=>{
     const b=document.getElementById(id);
     b.addEventListener("mouseover",()=>chaos(b));
     b.addEventListener("touchstart",()=>chaos(b));
 });
 
-// Floating Hearts
 for(let i=0;i<15;i++){
     const h=document.createElement("div");
     h.className="heart"; h.innerText="❤️";
